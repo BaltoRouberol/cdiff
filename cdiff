@@ -57,7 +57,7 @@ def main():
                 elif line.startswith('<'):  # removed line
                     # colorize removed line in red, replacing the '< ' token
                     # by '- ', as - is more readable that <
-                    line = line.replace(line[:0], '-')  # Git style
+                    line = line.replace(line[0], '-')  # Git style
                     output += colorize(line, RED)
                 else:
                     output += colorize(line)  # Use normal command line color
