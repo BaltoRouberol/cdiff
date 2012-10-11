@@ -47,17 +47,17 @@ def main():
             raise IOError(err)
         else:
             output = ''
-            lines = out.split('\n')[:-1]
+            lines = out.split('\n')
             for line in lines:
                 if line.startswith('>'):  # new line
                     # colorize new line in green, replacing the '> ' token
                     # by '+ ', as + is more readable that >
-                    line = line.replace(line[:2], '+ ')  # Git style
+                    line = line.replace(line[0], '+')  # Git style
                     output += colorize(line, GREEN)
                 elif line.startswith('<'):  # removed line
                     # colorize removed line in red, replacing the '< ' token
                     # by '- ', as - is more readable that <
-                    line = line.replace(line[:2], '- ')  # Git style
+                    line = line.replace(line[:0], '-')  # Git style
                     output += colorize(line, RED)
                 else:
                     output += colorize(line)  # Use normal command line color
