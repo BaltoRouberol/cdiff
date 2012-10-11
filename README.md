@@ -10,12 +10,12 @@ You can also use all default `diff` options (see `man diff` or `diff --help`).
 Installation
 ------------
 Clone the repository, then
-'''bash
+```bash
 $ chmod +x diff
-'''
+```
 
 Usage
 -----
-'''bash
+```bash
 $ cdiff file1 file2 [diff options]
-'''
+```
