@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+"""
+Colorize the output of the `diff` command.
+All added lines will be colorized in green, and all suppressed ones
+will be colored in red.
+The git style will be used '+ $line' for added lines, and '- $line' for
+removed lines.
+"""
+
+import subprocess
+import sys
+import getopt
+
+# ANSI escape color codes
+GREEN = '\033[92m'
+RED = '\033[91m'
+END = '\033[0m'
+
+
+def colorize(line, color=END):
+    """ Return a colorized line, using the argument 'color',
+        an ANSI escape sequence.
+    """
+    return color + line + '\n' + END
+
+
+def main():
+    """ Read the output of the diff command on the sys arguments,
+        and displays a colored output.
+    """
+    try:
+        # scan all args and options from the command line
+        # No corresponding options are specified, allowing the
+        # user to use all `diff` native options.
+        opts, args = getopt.getopt(sys.argv[1:], ())
+    except getopt.GetoptError, err:
+        # print help information and exit:
+        print str(err)  # will print something like "option -a not recognized"
+        sys.exit(2)
+    else:
+        # execute the `diff` command, using input arguments and options
+        # redirect stdout and stderr in strings
+        diff = subprocess.Popen(['diff'] + args + opts,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = diff.communicate()
+        if err:
+            raise IOError(err)
+        else:
+            output = ''
+            lines = out.split('\n')[:-1]
+            for line in lines:
+                if line.startswith('>'):  # new line
+                    # colorize new line in green, replacing the '> ' token
+                    # by '+ ', as + is more readable that >
+                    line = line.replace(line[:2], '+ ')  # Git style
+                    output += colorize(line, GREEN)
+                elif line.startswith('<'):  # removed line
+                    # colorize removed line in red, replacing the '< ' token
+                    # by '- ', as - is more readable that <
+                    line = line.replace(line[:2], '- ')  # Git style
+                    output += colorize(line, RED)
+                else:
+                    output += colorize(line)  # Use normal command line color
+            print output
+
+if __name__ == '__main__':
+    main()
